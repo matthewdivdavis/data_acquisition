@@ -1,0 +1,16 @@
+
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Data Acquisition"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.html
+
+format:
+  html:
+    theme: cosmo
+    toc: true

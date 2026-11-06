@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>main</title>
+<title>Data Acquisition</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -29,17 +29,50 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="main_files/libs/clipboard/clipboard.min.js"></script>
-<script src="main_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="main_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="main_files/libs/quarto-html/popper.min.js"></script>
-<script src="main_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="main_files/libs/quarto-html/anchor.min.js"></script>
-<link href="main_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="main_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="main_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="main_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="main_files/libs/bootstrap/bootstrap-917079515d91bccb85b543faf8aa8bb6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-445b8638c3d06994fee0907d791121c4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -47,10 +80,70 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Data Acquisition</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#title.akas.tsv.gz" id="toc-title.akas.tsv.gz" class="nav-link active" data-scroll-target="#title.akas.tsv.gz">title.akas.tsv.gz</a></li>
+  <li><a href="#title.basics.tsv.gz" id="toc-title.basics.tsv.gz" class="nav-link" data-scroll-target="#title.basics.tsv.gz">title.basics.tsv.gz</a></li>
+  <li><a href="#title.crew.tsv.gz" id="toc-title.crew.tsv.gz" class="nav-link" data-scroll-target="#title.crew.tsv.gz">title.crew.tsv.gz</a></li>
+  <li><a href="#title.ratings.tsv.gz" id="toc-title.ratings.tsv.gz" class="nav-link" data-scroll-target="#title.ratings.tsv.gz">title.ratings.tsv.gz</a></li>
+  <li><a href="#step-1" id="toc-step-1" class="nav-link" data-scroll-target="#step-1">Step 1</a></li>
+  <li><a href="#step-2" id="toc-step-2" class="nav-link" data-scroll-target="#step-2">Step 2</a>
+  <ul class="collapse">
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
+  </ul></li>
+  <li><a href="#step-3" id="toc-step-3" class="nav-link" data-scroll-target="#step-3">Step 3</a>
+  <ul class="collapse">
+  <li><a href="#result-1" id="toc-result-1" class="nav-link" data-scroll-target="#result-1">Result</a></li>
+  </ul></li>
+  <li><a href="#step-4" id="toc-step-4" class="nav-link" data-scroll-target="#step-4">Step 4</a>
+  <ul class="collapse">
+  <li><a href="#result-2" id="toc-result-2" class="nav-link" data-scroll-target="#result-2">Result</a></li>
+  <li><a href="#result-3" id="toc-result-3" class="nav-link" data-scroll-target="#result-3">Result</a></li>
+  </ul></li>
+  <li><a href="#step-5" id="toc-step-5" class="nav-link" data-scroll-target="#step-5">Step 5</a></li>
+  <li><a href="#step-6" id="toc-step-6" class="nav-link" data-scroll-target="#step-6">Step 6</a>
+  <ul class="collapse">
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -95,12 +188,12 @@ ul.task-list li input[type="checkbox"] {
 <section id="step-1" class="level2">
 <h2 class="anchored" data-anchor-id="step-1">Step 1</h2>
 <p>First to start out I read in the titles.aka.tsv. Because the data is so large I filtered it and I’ll read in the filtered data, but include code to read in the original. I filtered the title akas so that it selected all the titles that were not listed as foreign release.</p>
-<div id="b1e507be" class="cell" data-execution_count="2">
+<div id="11560976" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -148,12 +241,12 @@ Data Head</code></pre>
 <section id="step-2" class="level2">
 <h2 class="anchored" data-anchor-id="step-2">Step 2</h2>
 <p>I want to do some filtering to get the projects I want from the title.basics.tsv. I will filter to only titles that are newer than 1980, and then I want to do some EDA on those titles. I’ll combine that with the titles.aka so that it gets primarily US titles.</p>
-<div id="bbe7729a" class="cell" data-execution_count="3">
+<div id="6f426435" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
 
@@ -228,7 +321,7 @@ Data Head</code></pre>
 </div>
 </div>
 <p>I checked the NA values</p>
-<div id="2a39f1f8" class="cell" data-execution_count="4">
+<div id="3450fe0d" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 203717
 Cols: 7
@@ -243,7 +336,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>And then dropped all the NA values, and checked the new size and outputs.</p>
-<div id="10f722f0" class="cell" data-execution_count="5">
+<div id="1239ac96" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 133936
 Cols: 7
@@ -258,21 +351,21 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Then I plotted a distribution of the some of the different values.</p>
-<div id="79482662" class="cell" data-execution_count="6">
+<div id="f04c4e4e" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-7-output-1.png" width="1144" height="664" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="1144" height="664" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Then I wanted to see if there were any genre trends.</p>
-<div id="a7896904" class="cell" data-execution_count="7">
+<div id="7ec7874f" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-8-output-1.png" width="763" height="470" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-8-output-1.png" width="763" height="470" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -286,7 +379,7 @@ dtype: int64</code></pre>
 <section id="step-3" class="level2">
 <h2 class="anchored" data-anchor-id="step-3">Step 3</h2>
 <p>I’m going to merge the title_crew information with the title.basics information. before I do an inner merge on tconst I’m gonna drop all the na’s. Then I’ll do some plots to see what it all looks like.</p>
-<div id="cb6e56b0" class="cell" data-execution_count="8">
+<div id="86b6acf3" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>Filtered DF
 Rows: 5525934
@@ -298,7 +391,7 @@ directors    0
 writers      0
 dtype: int64</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 
 
@@ -349,7 +442,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Once I read in and filtered the data I merged the crew and movie titled data.</p>
-<div id="e85f2d25" class="cell" data-execution_count="9">
+<div id="351484bd" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 103924
 Cols: 9
@@ -368,7 +461,7 @@ dtype: int64
 
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 
 
@@ -455,11 +548,11 @@ Data Head</code></pre>
 </div>
 </div>
 <p>Once I merged the datasets I did some EDA through different plots.</p>
-<div id="6c63ca95" class="cell" data-execution_count="10">
+<div id="a071a48b" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-11-output-1.png" width="1144" height="663" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-11-output-1.png" width="1144" height="663" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -472,7 +565,7 @@ Data Head</code></pre>
 <section id="step-4" class="level2">
 <h2 class="anchored" data-anchor-id="step-4">Step 4</h2>
 <p>Now I want to read in the title ratings, and try to match that with director information.</p>
-<div id="ee2941f0" class="cell" data-execution_count="11">
+<div id="ca886835" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Filtered DF
@@ -481,7 +574,7 @@ Cols: 9
 
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="26">
 <div>
 
 
@@ -532,11 +625,11 @@ Data Head</code></pre>
 </div>
 </div>
 <p>I did some EDA plots on movie ratings.</p>
-<div id="b2d16472" class="cell" data-execution_count="12">
+<div id="518ee78c" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-13-output-1.png" width="1180" height="664" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-13-output-1.png" width="1180" height="664" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -544,11 +637,11 @@ Data Head</code></pre>
 <section id="result-2" class="level3">
 <h3 class="anchored" data-anchor-id="result-2">Result</h3>
 <p>What this tells me, is that the average rating is much more normally distributed (slight left skew) than any of the other values in this dataset, which is generally what I would expect. On average, a movie gets rated slightly above the random average (5 out of 10), and leans more upward (which makes sense because movies are supposed to be good). Another interesting part of this is the number of votes films are getting. It makes me curious to see if there is any impact on numVotes and the average rating.</p>
-<div id="3d6b8af1" class="cell" data-execution_count="13">
+<div id="e140e305" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-14-output-1.png" width="759" height="373" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-14-output-1.png" width="759" height="373" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -562,7 +655,7 @@ Data Head</code></pre>
 <section id="step-5" class="level2">
 <h2 class="anchored" data-anchor-id="step-5">Step 5</h2>
 <p>I want to merge the ratings data with the rest of the movie data and see if we can learn anything from the movie data. Before I merge the last I want get movies that have more votes than the average (to make sure it’s gets the more popular/relevant movies).</p>
-<div id="c2a4e12b" class="cell" data-execution_count="14">
+<div id="a1e832e0" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-stdout">
 <pre><code>Before Votes Filter
 Rows: 60026
@@ -576,7 +669,7 @@ After Merge
 Rows: 13777
 Cols: 11</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="29">
 <div>
 
 
@@ -678,11 +771,11 @@ Cols: 11</code></pre>
 <section id="step-6" class="level2">
 <h2 class="anchored" data-anchor-id="step-6">Step 6</h2>
 <p>Now that I have a final result, I want to see if there is any discernable relationship between different movie characteristics and their average rating.</p>
-<div id="056d6cef" class="cell" data-execution_count="15">
+<div id="0a9be331" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-16-output-1.png" width="1724" height="757" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-16-output-1.png" width="1724" height="757" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -690,11 +783,12 @@ Cols: 11</code></pre>
 <section id="results" class="level3">
 <h3 class="anchored" data-anchor-id="results">Results</h3>
 <p>The most visually interesting result (to me) is that the top directors have a tight clusters in their movie ratings than the bottom rated directors.</p>
+
+
 </section>
 </section>
 
-</main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
