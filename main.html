@@ -95,12 +95,12 @@ ul.task-list li input[type="checkbox"] {
 <section id="step-1" class="level2">
 <h2 class="anchored" data-anchor-id="step-1">Step 1</h2>
 <p>First to start out I read in the titles.aka.tsv. Because the data is so large I filtered it and I’ll read in the filtered data, but include code to read in the original. I filtered the title akas so that it selected all the titles that were not listed as foreign release.</p>
-<div id="93a5b411" class="cell" data-execution_count="2">
+<div id="b1e507be" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="62">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -148,12 +148,12 @@ Data Head</code></pre>
 <section id="step-2" class="level2">
 <h2 class="anchored" data-anchor-id="step-2">Step 2</h2>
 <p>I want to do some filtering to get the projects I want from the title.basics.tsv. I will filter to only titles that are newer than 1980, and then I want to do some EDA on those titles. I’ll combine that with the titles.aka so that it gets primarily US titles.</p>
-<div id="9c78a0ce" class="cell" data-execution_count="3">
+<div id="bbe7729a" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="63">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -228,7 +228,7 @@ Data Head</code></pre>
 </div>
 </div>
 <p>I checked the NA values</p>
-<div id="8c1b509f" class="cell" data-execution_count="4">
+<div id="2a39f1f8" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 203717
 Cols: 7
@@ -243,7 +243,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>And then dropped all the NA values, and checked the new size and outputs.</p>
-<div id="a090b3a7" class="cell" data-execution_count="5">
+<div id="10f722f0" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 133936
 Cols: 7
@@ -258,7 +258,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Then I plotted a distribution of the some of the different values.</p>
-<div id="ea6d43d5" class="cell" data-execution_count="6">
+<div id="79482662" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -268,7 +268,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Then I wanted to see if there were any genre trends.</p>
-<div id="079dfa8f" class="cell" data-execution_count="7">
+<div id="a7896904" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -286,7 +286,7 @@ dtype: int64</code></pre>
 <section id="step-3" class="level2">
 <h2 class="anchored" data-anchor-id="step-3">Step 3</h2>
 <p>I’m going to merge the title_crew information with the title.basics information. before I do an inner merge on tconst I’m gonna drop all the na’s. Then I’ll do some plots to see what it all looks like.</p>
-<div id="172a582a" class="cell" data-execution_count="8">
+<div id="cb6e56b0" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>Filtered DF
 Rows: 5525934
@@ -298,7 +298,7 @@ directors    0
 writers      0
 dtype: int64</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="68">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -349,7 +349,7 @@ dtype: int64</code></pre>
 </div>
 </div>
 <p>Once I read in and filtered the data I merged the crew and movie titled data.</p>
-<div id="f2a8af04" class="cell" data-execution_count="9">
+<div id="e85f2d25" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 103924
 Cols: 9
@@ -368,7 +368,7 @@ dtype: int64
 
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="69">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -455,7 +455,7 @@ Data Head</code></pre>
 </div>
 </div>
 <p>Once I merged the datasets I did some EDA through different plots.</p>
-<div id="d455d54d" class="cell" data-execution_count="10">
+<div id="6c63ca95" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -472,7 +472,7 @@ Data Head</code></pre>
 <section id="step-4" class="level2">
 <h2 class="anchored" data-anchor-id="step-4">Step 4</h2>
 <p>Now I want to read in the title ratings, and try to match that with director information.</p>
-<div id="deff5e62" class="cell" data-execution_count="11">
+<div id="ee2941f0" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Filtered DF
@@ -481,7 +481,7 @@ Cols: 9
 
 Data Head</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="71">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -532,7 +532,7 @@ Data Head</code></pre>
 </div>
 </div>
 <p>I did some EDA plots on movie ratings.</p>
-<div id="1756f3d6" class="cell" data-execution_count="12">
+<div id="b2d16472" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -544,7 +544,7 @@ Data Head</code></pre>
 <section id="result-2" class="level3">
 <h3 class="anchored" data-anchor-id="result-2">Result</h3>
 <p>What this tells me, is that the average rating is much more normally distributed (slight left skew) than any of the other values in this dataset, which is generally what I would expect. On average, a movie gets rated slightly above the random average (5 out of 10), and leans more upward (which makes sense because movies are supposed to be good). Another interesting part of this is the number of votes films are getting. It makes me curious to see if there is any impact on numVotes and the average rating.</p>
-<div id="ca6357a1" class="cell" data-execution_count="13">
+<div id="3d6b8af1" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -562,7 +562,7 @@ Data Head</code></pre>
 <section id="step-5" class="level2">
 <h2 class="anchored" data-anchor-id="step-5">Step 5</h2>
 <p>I want to merge the ratings data with the rest of the movie data and see if we can learn anything from the movie data. Before I merge the last I want get movies that have more votes than the average (to make sure it’s gets the more popular/relevant movies).</p>
-<div id="923e07f8" class="cell" data-execution_count="14">
+<div id="c2a4e12b" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-stdout">
 <pre><code>Before Votes Filter
 Rows: 60026
@@ -576,7 +576,7 @@ After Merge
 Rows: 13777
 Cols: 11</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="74">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <div>
 
 
@@ -678,7 +678,7 @@ Cols: 11</code></pre>
 <section id="step-6" class="level2">
 <h2 class="anchored" data-anchor-id="step-6">Step 6</h2>
 <p>Now that I have a final result, I want to see if there is any discernable relationship between different movie characteristics and their average rating.</p>
-<div id="1faeabc1" class="cell" data-execution_count="15">
+<div id="056d6cef" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -689,7 +689,7 @@ Cols: 11</code></pre>
 </div>
 <section id="results" class="level3">
 <h3 class="anchored" data-anchor-id="results">Results</h3>
-<p>The most visually interesting result (to me) is that the top directors have a tight clusters in their movie ratings than the</p>
+<p>The most visually interesting result (to me) is that the top directors have a tight clusters in their movie ratings than the bottom rated directors.</p>
 </section>
 </section>
 
