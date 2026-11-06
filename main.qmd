@@ -1,0 +1,531 @@
+## Introduction 
+In this project I want to discover what things have an influence on the rating a movie receives on IMDb. I feel this is relevant because I am always looking for a good movie to watch, and I love watching movies. 
+
+This data is publicly available through IMDb for free download for non-commercial use. I am, therefore, not worried about using it in a project like this. Because this data is available for free download, no scraping was involved, the bulk of the work was in filter and joining data to get the features I wanted. 
+
+The data I collected originated from the four sets listed below. 
+
+### [title.akas.tsv.gz](https://datasets.imdbws.com/title.akas.tsv.gz)
+
+This contains the names of movies for all the regions it was released in. The columns I'll use from this dataset are: 
+- titleId (string): A unique alphanumeric identifier
+- title (string): the localized title 
+- region (string): the region for this version of the title
+- isOriginalTitle (boolean): 0 if not the original title, 1 if it *is* the original title
+
+### [title.basics.tsv.gz](https://datasets.imdbws.com/title.basics.tsv.gz)
+
+This containts the names of movies and some basic information about the movie. The columns I'll use from this dataset are: 
+- tconst (string): A unique alphanumeric identifier (primary key)
+- titleType (string): type or format of the title (differentiating movies from tv shows)
+- primaryTitle (string): The popular title of the movie 
+- isAdult (boolean): 0 if non-adult title, 1 for adult title
+- startYear (YYYY): release data of the movie/show
+- runtimeMinutes: movie runtime 
+- genres (string array): up to three associated genres
+
+### [title.crew.tsv.gz](https://datasets.imdbws.com/title.crew.tsv.gz)
+
+This contains the directors and writers of a project. The columns I'll use from this dataset are: 
+- tconst (string): a unique alphanumeric identifier of movies (primary and foreign key) 
+- directors (array of nconsts): directors of a project 
+- writers (array of nconsts): writers of a project 
+
+
+### [title.ratings.tsv.gz](https://datasets.imdbws.com/title.ratings.tsv.gz)
+
+This contains a rating for every title in the dataset. The columns I'll use from this dataset are: 
+- tconst (string): unique alphanumeric identifier (primary and foreign key)
+- averageRating: weighted average of all user ratings 
+- numVotes: number of votes a title has receieved 
+
+From these sets I wanted to get movies originating primarily from the US (more relevant for me and my language), movies made after 1980 (more relevant timeline), and movies that had more than average user ratings. The reason for this was so that I was choosing *popular* movies, even if they were reviewed poorly. 
+
+## Step 1
+First to start out I read in the titles.aka.tsv. Because the data is so large I filtered it and I'll read in the filtered data, but include code to read in the original. I filtered the title akas so that it selected all the titles that were not listed as foreign release. 
+
+```{python}
+#| echo: false
+import pandas as pd
+import matplotlib.pyplot as plt 
+import numpy as np 
+from scipy.stats import linregress
+import seaborn as sns
+```
+
+```{python}
+#| echo: false
+try: 
+    aka_filter_df = pd.read_csv("data/title_aka_filter.tsv", sep = "\t")
+except: 
+    title_aka_df = pd.read_csv("data/title.akas.tsv", sep = "\t")[['titleId', 'title', 'region', 'isOriginalTitle']]
+    mask = (
+        (title_aka_df['region'] == 'US') & 
+        (title_aka_df['isOriginalTitle'] == 0)
+    )
+    aka_filter_df = title_aka_df.loc[mask, :]
+    aka_filter_df[['titleId', 'title']].to_csv("data/title_aka_filter.tsv", sep = "\t", index=False)
+
+print("\nData Head")
+aka_filter_df.head()
+```
+
+## Step 2
+I want to do some filtering to get the projects I want from the title.basics.tsv. I will filter to only titles that are newer than 1980, and then I want to do some EDA on those titles. I'll combine that with the titles.aka so that it gets primarily US titles. 
+
+```{python}
+#| echo: false
+try: 
+    basic_filter_df = pd.read_csv("data/title_basics_filter.tsv", sep = "\t")
+    basic_filter_df['startYear'] = pd.to_numeric(basic_filter_df['startYear'], errors= 'coerce')
+    basic_filter_df['genres'] = basic_filter_df['genres'].replace("\\N", np.nan)
+    basic_filter_df['titleType'] = basic_filter_df['titleType'].replace("\\N", np.nan)
+    basic_filter_df['primaryTitle'] = basic_filter_df['primaryTitle'].replace("\\N", np.nan)
+    basic_filter_df['isAdult'] = basic_filter_df['isAdult'].replace("\\N", np.nan)
+except: 
+    title_basics_df = pd.read_csv("data/title.basics.tsv", sep = "\t")[['tconst', 'titleType', 'primaryTitle', 'isAdult', 'startYear', 'runtimeMinutes', 'genres']]
+    basic_filter_df = title_basics_df[~title_basics_df['tconst'].isin(aka_filter_df['titleId'])]
+    mask = (
+        (basic_filter_df['titleType'] == "movie")
+        & (pd.to_numeric(basic_filter_df['startYear'], errors='coerce') >= 1980)
+        & (basic_filter_df['isAdult'] == 0)
+    )
+    basic_filter_df = basic_filter_df.loc[mask, :]
+    basic_filter_df['runtimeMinutes'] = pd.to_numeric(basic_filter_df['runtimeMinutes'], errors= 'coerce')
+    basic_filter_df['startYear'] = pd.to_numeric(basic_filter_df['startYear'], errors= 'coerce')
+    basic_filter_df['genres'] = basic_filter_df['genres'].replace("\\N", np.nan)
+    basic_filter_df['titleType'] = basic_filter_df['titleType'].replace("\\N", np.nan)
+    basic_filter_df['primaryTitle'] = basic_filter_df['primaryTitle'].replace("\\N", np.nan)
+    basic_filter_df['isAdult'] = basic_filter_df['isAdult'].replace("\\N", np.nan)
+    basic_filter_df.to_csv("data/title_basics_filter.tsv", sep = "\t", index=False)
+    
+print("\nData Head")
+basic_filter_df.head()
+```
+
+I checked the NA values 
+
+```{python}
+#| echo: false
+shape = basic_filter_df.shape
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+print(basic_filter_df.isna().sum())
+```
+
+And then dropped all the NA values, and checked the new size and outputs. 
+
+```{python}
+#| echo: false
+basic_filter_df = basic_filter_df.dropna()
+shape = basic_filter_df.shape
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+print(basic_filter_df.isna().sum())
+```
+
+Then I plotted a distribution of the some of the different values. 
+
+```{python}
+#| echo: false
+def within_3_std(s, a = 3):
+    mean, std = s.mean(), s.std()
+    return s[(s - mean).abs() <= a * std]
+
+year_data = basic_filter_df['startYear'].dropna()
+runtime_data = basic_filter_df['runtimeMinutes'].dropna()
+runtime_data_filt = within_3_std(runtime_data)
+
+plots = [
+    (year_data, 'Year', 'Titles by year', ''),
+    (runtime_data, 'Run Time (minutes)', 'Titles by Run Time (Full Data)', ' min'),
+    (runtime_data_filt, 'Run Time (minutes)', 'Titles by Run Time (within 3 stds)', 'min')
+]
+
+fig, axes = plt.subplots(2, 3, figsize=(12, 7), sharex='col',
+                         gridspec_kw={'height_ratios': [2, 1]})
+
+for col, (data, xlabel, title, unit) in enumerate(plots):
+    hist_ax = axes[0, col]
+    box_ax = axes[1, col]
+    mean, std = data.mean(), data.std()
+
+    # Histogram
+    hist_ax.hist(data, bins=10, edgecolor='black')
+    hist_ax.axvline(mean, color='red', linestyle='--', linewidth=2,
+                    label=f'Mean: {mean:.1f}{unit}')
+    hist_ax.axvline(mean + std, color='black', linestyle='--', linewidth=1,
+                    label=f'+1 STD: {mean + std:.1f}{unit}')
+    hist_ax.axvline(mean - std, color='black', linestyle='--', linewidth=1,
+                    label=f'-1 STD: {mean - std:.1f}{unit}')
+    hist_ax.set_ylabel('Number of titles')
+    hist_ax.set_title(title)
+    hist_ax.legend()
+
+    # Boxplot
+    box_ax.boxplot(data, orientation='horizontal', widths=0.6)
+    box_ax.set_yticks([])
+    box_ax.set_xlabel(xlabel)
+    box_ax.tick_params(axis='x', labelrotation=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+Then I wanted to see if there were any genre trends. 
+
+```{python}
+#| echo: false
+genre_df = basic_filter_df.assign(
+    genres=basic_filter_df['genres'].str.split(',')
+).explode('genres')
+
+genre_counts = genre_df.groupby('genres')['tconst'].count().sort_values()
+
+ax = genre_counts.plot.barh(figsize=(8, 5), edgecolor='black')
+ax.set_xlabel('Number of movies')
+ax.set_ylabel('Genre')
+ax.set_title('Movies by genre')
+plt.tight_layout()
+plt.show()
+```
+
+**Note:** movies can get assigned multiple genres, so there is double counting happening inherently. 
+
+### Result
+At first glance it looks like the majority of these movies are Documentaries, Dramas, and Comedies. Most of the movies were made more recently (left skewed data). Another interesting component is s a mean of 85.9 minutes, which is lower than I expected. 
+
+## Step 3
+
+I'm going to merge the title_crew information with the title.basics information. before I do an inner merge on tconst I'm gonna drop all the na's. Then I'll do some plots to see what it all looks like. 
+
+```{python} 
+#| echo: false
+try: 
+    crew_filter_df = pd.read_csv("data/title_crew_filter.tsv", sep = "\t")
+    shape = crew_filter_df.shape
+    print("Filtered DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+    print("\nNA Values")
+    print(crew_filter_df.isna().sum())
+except: 
+    title_crew_df = pd.read_csv("data/title.crew.tsv", sep = "\t")
+    title_crew_df['writers'] = title_crew_df['writers'].replace("\\N", np.nan)
+    title_crew_df['directors'] = title_crew_df['directors'].replace("\\N", np.nan)
+    title_crew_df['tconst'] = title_crew_df['tconst'].replace("\\N", np.nan)
+    shape = title_crew_df.shape
+    print("Initial DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+    print(title_crew_df.isna().sum())
+    crew_filter_df = title_crew_df.dropna()
+    shape = crew_filter_df.shape
+    print("\nFiltered DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+    print(crew_filter_df.isna().sum())
+    crew_filter_df.to_csv("data/title_crew_filter.tsv", sep = "\t", index = False)
+
+crew_filter_df.head()
+```
+
+Once I read in and filtered the data I merged the crew and movie titled data. 
+
+```{python}
+#| echo: false
+basic_crew_merge = pd.merge(
+    basic_filter_df,
+    crew_filter_df, 
+    how = "inner", 
+    on = "tconst", 
+    )
+shape = basic_crew_merge.shape
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+print("\nNA Values")
+print(basic_crew_merge.isna().sum())
+basic_crew_merge.to_csv("data/title_basic_crew_merge.tsv", sep = "\t", index = False)
+print("\nData Head")
+basic_crew_merge.head()
+```
+
+Once I merged the datasets I did some EDA through different plots. 
+
+```{python}
+#| echo: false
+dir_count = basic_crew_merge.groupby('directors')['tconst'].count()
+
+plots = [
+    (dir_count, 'Number of Movies', 'Number of Movies by Directors'),
+    (within_3_std(dir_count), 'Number of Movies', 'Number of Movies by Directors (within 3 stds)'),
+]
+
+fig, axes = plt.subplots(
+    2, 2,
+    figsize=(12, 7), 
+    sharex = 'col'
+)
+
+for col, (data, xlabel, title) in enumerate(plots): 
+
+    hist_ax = axes[0, col]
+    box_ax = axes[1, col]
+    mean, std, max = data.mean(), data.std(), data.max()
+
+    # Histogram
+    hist_ax.hist(data, bins=10, edgecolor='black')
+    hist_ax.axvline(mean, color = 'red', linestyle = '--', linewidth = 2,
+                    label = f"Mean: {mean:.1f}")
+    hist_ax.axvline(mean + std, color='black', linestyle='--', linewidth=1,
+                    label=f'+1 STD: {mean + std:.1f}{unit}')
+    hist_ax.axvline(mean - std, color='black', linestyle='--', linewidth=1,
+                    label=f'-1 STD: {mean - std:.1f}{unit}')
+    hist_ax.axvline(max, color = 'green', linestyle = "--", linewidth = 1, 
+                    label = f"Max: {max:.1f}")
+    hist_ax.set_title(title)
+    hist_ax.set_xlabel(xlabel)
+    hist_ax.set_ylabel("Number of Directors")
+    hist_ax.legend()
+
+    box_ax.boxplot(data, orientation='horizontal', widths=0.6)
+    box_ax.set_yticks([])
+    box_ax.set_xlabel(xlabel)
+    box_ax.tick_params(axis='x', labelrotation=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Result
+It looks like most of the directors have made an average of 1.6 movies, which is lower than I expected, but the max was 271 movies by one director, which is much higher than I thought. It will be interesting to see where the spread lands after filtering based on reviews and actors. 
+
+## Step 4
+Now I want to read in the title ratings, and try to match that with director information. 
+
+```{python}
+#| echo: false
+try: 
+    ratings_filter_df = pd.read_csv("data/title_rating_filter.tsv", sep = "\t")
+    print("\nFiltered DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+except: 
+    title_ratings_df = pd.read_csv("data/title.ratings.tsv", sep = "\t")
+    shape = title_ratings_df.shape
+    print("Original DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+    print(title_ratings_df.isna().sum())
+    ratings_filter_df = title_ratings_df.dropna()
+    ratings_filter_df = pd.merge(basic_crew_merge['tconst'], ratings_filter_df, how = "inner", on = "tconst", )
+    shape = ratings_filter_df.shape
+    print("\nFiltered DF")
+    print("Rows:", shape[0])
+    print("Cols:", shape[1])
+    ratings_filter_df.to_csv("data/title_rating_filter.tsv", sep = "\t", index = False)
+
+print("\nData Head")
+ratings_filter_df.head()
+```
+
+I did some EDA plots on movie ratings. 
+
+```{python}
+#| echo: false
+plots = [
+    (ratings_filter_df['averageRating'], 'Average Rating', 'Distribution of the Average Rating'),
+    (ratings_filter_df['numVotes'], 'Number of Votes', 'Distribution of Number of Votes'),
+    (within_3_std(ratings_filter_df['numVotes']), 'Number of Votes', 'Distribution of Number of Votes (within 3 stds)'),
+]
+
+fig, axes = plt.subplots(
+    2, 3,
+    figsize=(12, 7), 
+    sharex = 'col'
+)
+
+for col, (data, xlabel, title) in enumerate(plots): 
+
+    hist_ax = axes[0, col]
+    box_ax = axes[1, col]
+    mean, std, max = data.mean(), data.std(), data.max()
+
+    # Histogram
+    hist_ax.hist(data, bins=10, edgecolor='black')
+    hist_ax.axvline(mean, color = 'red', linestyle = '--', linewidth = 2,
+                    label = f"Mean: {mean:.1f}")
+    hist_ax.axvline(mean + std, color='black', linestyle='--', linewidth=1,
+                    label=f'+1 STD: {mean + std:.1f}{unit}')
+    hist_ax.axvline(mean - std, color='black', linestyle='--', linewidth=1,
+                    label=f'-1 STD: {mean - std:.1f}{unit}')
+    hist_ax.axvline(max, color = 'green', linestyle = "--", linewidth = 1, 
+                    label = f"Max: {max:.1f}")
+    hist_ax.set_title(title)
+    hist_ax.set_xlabel(xlabel)
+    hist_ax.set_ylabel("Number of Directors")
+    hist_ax.legend()
+
+    box_ax.boxplot(data, orientation='horizontal', widths=0.6)
+    box_ax.set_yticks([])
+    box_ax.set_xlabel(xlabel)
+    box_ax.tick_params(axis='x', labelrotation=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Result
+What this tells me, is that the average rating is much more normally distributed (slight left skew) than any of the other values in this dataset, which is generally what I would expect. On average, a movie gets rated slightly above the random average (5 out of 10), and leans more upward (which makes sense because movies are supposed to be good). 
+Another interesting part of this is the number of votes films are getting. It makes me curious to see if there is any impact on numVotes and the average rating. 
+
+```{python}
+#| echo: false
+fig, axes = plt.subplots(
+    1, 2,
+    figsize=(8, 4), 
+    sharex = 'col'
+)
+
+norm_scat = axes[0]
+norm_scat.scatter(ratings_filter_df['numVotes'], ratings_filter_df['averageRating'], alpha = 0.2)
+norm_scat.set_xlabel("Number of Votes")
+norm_scat.set_ylabel("Average Rating")
+
+log_scat = axes[1]
+log_scat.scatter(ratings_filter_df['numVotes'], ratings_filter_df['averageRating'], alpha = 0.2)
+log_scat.set_xlabel("Number of Votes (log scale)")
+log_scat.set_xscale('log')
+
+log_reg = linregress(
+    np.log10(ratings_filter_df['numVotes']),
+    ratings_filter_df['averageRating']
+)
+
+x_log = np.logspace(
+    np.log10(ratings_filter_df['numVotes'].min()),
+    np.log10(ratings_filter_df['numVotes'].max()),
+    100
+)
+
+y_log = (
+    log_reg.slope * np.log10(x_log)
+    + log_reg.intercept
+)
+
+log_scat.plot(
+    x_log,
+    y_log,
+    color='red',
+    label=f"r = {log_reg.rvalue:.3f}"
+)
+
+log_scat.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+### Result
+There doesn't seem to be much of a relationship between the number of votes and the average rating. Because numVotes is so right skewed I used a log transform, and still only got an r-value of -0.188, which is very weak. 
+
+## Step 5
+I want to merge the ratings data with the rest of the movie data and see if we can learn anything from the movie data. Before I merge the last I want get movies that have more votes than the average (to make sure it's gets the more popular/relevant movies). 
+
+```{python}
+#| echo: false
+shape = ratings_filter_df.shape
+print("Before Votes Filter")
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+
+mask = (ratings_filter_df['numVotes'] >= 126)
+
+ratings_filter_df_mean = ratings_filter_df.loc[mask, :]
+shape = ratings_filter_df_mean.shape
+print("\nAfter Votes Filter")
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+
+title_rating_full = pd.merge(basic_crew_merge, ratings_filter_df_mean, how = "inner", on = "tconst")
+shape = title_rating_full.shape
+print("\nAfter Merge")
+print("Rows:", shape[0])
+print("Cols:", shape[1])
+title_rating_full.head()
+```
+
+## Step 6
+Now that I have a final result, I want to see if there is any discernable relationship between different movie characteristics and their average rating. 
+
+```{python}
+#| echo: false
+genre_df = title_rating_full[['genres', 'averageRating']].assign(
+    genres = title_rating_full['genres'].str.split(',')
+).explode('genres')
+
+genre_avg = genre_df.groupby('genres')['averageRating'].mean().sort_values(ascending=True)
+dir_mask = ~title_rating_full['directors'].str.contains(',')
+top_dir = title_rating_full.loc[dir_mask, ['directors', 'averageRating']].groupby('directors')['averageRating'].agg(['mean', 'count']).query('count >= 5').sort_values('mean', ascending= False).head(10).reset_index()
+bot_dir = title_rating_full.loc[dir_mask, ['directors', 'averageRating']].groupby('directors')['averageRating'].agg(['mean', 'count']).query('count >= 5').sort_values('mean', ascending= True).head(10).reset_index()
+
+top_dir_movies = pd.merge(title_rating_full.loc[:, ['tconst', 'averageRating', 'directors']], top_dir.loc[:, 'directors'], how = 'inner', on = 'directors')
+
+bot_dir_movies = pd.merge(title_rating_full.loc[:, ['tconst', 'averageRating', 'directors']], bot_dir.loc[:, 'directors'], how = 'inner', on = 'directors')
+
+
+fig, axes = plt.subplots(2, 3, figsize = (18, 8))
+
+genre_avg.plot.barh(
+    ax=axes[0, 0],
+    edgecolor='black',
+    title='Average Rating by Genre'
+)
+
+sns.boxplot(
+    data=top_dir_movies,
+    x='averageRating',
+    y='directors',
+    ax=axes[0, 1]
+)
+axes[0, 1].set_xlim(left = 0, right = 10)
+
+sns.boxplot(
+    data = bot_dir_movies, 
+    x = 'averageRating', 
+    y = 'directors', 
+    ax = axes[0, 2], 
+)
+axes[0, 2].set_xlim(left = 0, right = 10)
+axes[0, 2].set_title('Movie Rating Distributions for Bottom Directors')
+axes[0, 2].set_xlabel('Movie Rating')
+axes[0, 2].set_ylabel('Director')
+
+axes[0, 0].set_xlabel('Average Rating')
+axes[0, 0].set_ylabel('Genre')
+
+axes[0, 1].set_title('Movie Rating Distributions for Top Directors')
+axes[0, 1].set_xlabel('Movie Rating')
+axes[0, 1].set_ylabel('Director')
+
+
+time_scat = axes[1, 0]
+time_scat.scatter(y = title_rating_full['averageRating'], x = title_rating_full['runtimeMinutes'], alpha = 0.2)
+time_scat.set_title('Movie Rating By Movie Runtime (Minutes)')
+time_scat.set_xlabel("Runtime (Minutes)")
+time_scat.set_ylabel("Average Movie Rating")
+
+time_scat_log = axes[1, 1]
+time_scat_log.scatter(x = title_rating_full['runtimeMinutes'], y = title_rating_full['averageRating'], alpha = 0.2)
+time_scat_log.set_xscale('log')
+time_scat.set_title('Movie Rating By Movie Runtime (log(minutes))')
+time_scat_log.set_xlabel("Runtime (log(Minutes))")
+time_scat_log.set_ylabel("Average Movie Rating")
+
+
+plt.tight_layout()
+plt.show()
+```
+
+### Results
+The most visually interesting result (to me) is that the top directors have a tight clusters in their movie ratings than the bottom rated directors. 
